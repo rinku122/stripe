@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { RazorpayModule } from './razorpay/razorpay.module';
 import { ConfigModule } from '@nestjs/config';
-import { RmqModule } from './rmq';
 import * as Joi from 'joi';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import * as Joi from 'joi';
       }),
     }),
     RazorpayModule,
-    RmqModule,
+    StripeModule,
   ],
 })
 export class AppModule {}

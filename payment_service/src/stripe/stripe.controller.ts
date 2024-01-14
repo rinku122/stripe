@@ -2,9 +2,10 @@ import { Controller, Get, Inject } from '@nestjs/common';
 import { ClientProxy, EventPattern } from '@nestjs/microservices';
 import { PAYMENT_SERVICE } from 'src/services/services';
 
-const EVENT_PREFIX = 'razorpay';
+const EVENT_PREFIX = 'stripe';
+
 @Controller(EVENT_PREFIX)
-export class RazorpayController {
+export class StripeController {
   constructor(
     @Inject(PAYMENT_SERVICE)
     private readonly client: ClientProxy,
@@ -25,6 +26,6 @@ export class RazorpayController {
 
   @EventPattern(`${EVENT_PREFIX}_created`)
   async hello(data: any) {
-    console.log(data, 'razorpay');
+    console.log(data, EVENT_PREFIX);
   }
 }

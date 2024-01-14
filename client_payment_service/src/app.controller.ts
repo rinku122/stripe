@@ -10,13 +10,23 @@ export class AppController {
     private readonly client: ClientProxy,
   ) {}
 
-  @EventPattern('product_created')
+  @EventPattern('razorpay_created')
   async hello(data: any) {
     console.log(data, 'client');
   }
 
-  @Get()
+  @EventPattern('stripe_created')
+  async hello5(data: any) {
+    console.log(data, 'client');
+  }
+
+  @Get('razorpay')
   getHello() {
-    this.client.emit('test_created', { hi: 'Hello there ' });
+    this.client.emit('razorpay_created', { hi: 'Hello there ' });
+  }
+
+  @Get('stripe')
+  getHelloS() {
+    this.client.emit('stripe_created', { hi: 'Hello there ' });
   }
 }
