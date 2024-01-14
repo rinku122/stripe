@@ -10,7 +10,8 @@ import * as Joi from 'joi';
       isGlobal: true,
       validationSchema: Joi.object({
         RABBIT_MQ_URI: Joi.string().required(),
-        RABBIT_MQ_PAYMENT_QUEUE: Joi.string().required(),
+        RABBIT_MQ_PAYMENT_REQ_QUEUE: Joi.string().required(),
+        RABBIT_MQ_PAYMENT_RES_QUEUE: Joi.string().required(),
       }),
     }),
     RazorpayModule,

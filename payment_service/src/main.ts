@@ -9,6 +9,7 @@ async function bootstrap() {
   app.connectMicroservice<RmqOptions>(rmqService.getOptions('PAYMENT', true));
   await app.startAllMicroservices();
 
+  await app.listen(8001);
   console.log(`🚀 Microservice is listening`);
 }
 bootstrap();
