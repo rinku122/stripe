@@ -70,7 +70,7 @@ const CartDetails = () => {
   // payment integration
   const makePayment = async () => {
     const stripe = await loadStripe(
-      "pk_test_51OZ5iCSC3OJRlozRYZigcUDxvS0vZfPtXlthgim9ABtj2D06UvP90VIMo9fhALXpUyFTSQt4OdGAutrds3E8ksch0068apb1bO"
+      "pk_test_51OZ9KlDr8UFKRjaPQl5EL00qgDizNLPHmRN06IAPusiYU6xpB7jTyLSLYfJhTdVZkYcupVVu4zVwsYvQJHDNZVvb00DkhTFXSD"
     );
     console.log(stripe);
     const body = {
@@ -88,6 +88,8 @@ const CartDetails = () => {
     console.log(body);
 
     const session = await response.json();
+
+    console.log(session);
 
     const result = stripe.redirectToCheckout({
       sessionId: session.id,

@@ -1,5 +1,9 @@
 import { Controller, Get, Inject } from '@nestjs/common';
-import { ClientProxy, EventPattern } from '@nestjs/microservices';
+import {
+  ClientProxy,
+  EventPattern,
+  MessagePattern,
+} from '@nestjs/microservices';
 import { PAYMENT_SERVICE } from 'src/services/services';
 import { StripeService } from './stripe.service';
 
@@ -26,8 +30,8 @@ export class StripeController {
   //   }
   // }
 
-  @EventPattern(`${EVENT_PREFIX}_checkout`)
-  async hello(data: any) {
-    this.stripeService.checkout(data);
+  @MessagePattern(`${EVENT_PREFIX}_checkout`)
+  checkOut(data: any) {
+    return this.stripeService.checkout(data);
   }
 }

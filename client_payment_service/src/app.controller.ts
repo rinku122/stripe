@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ClientProxy, EventPattern } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
 
 @Controller()
 export class AppController {
@@ -27,6 +28,6 @@ export class AppController {
 
   @Post('stripe')
   getHelloS(@Body() body: any) {
-    this.client.emit('stripe_checkout', body);
+    return lastValueFrom(this.client.send('stripe_checkout', body));
   }
 }
