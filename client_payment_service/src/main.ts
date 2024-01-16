@@ -14,7 +14,7 @@ async function bootstrap() {
       queueOptions: { durable: false },
     },
   });
-
+  app.enableCors();
   await app.startAllMicroservices();
   await app.listen(8000);
 
