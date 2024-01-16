@@ -1,4 +1,4 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, Headers } from '@nestjs/common';
 import {
   ClientProxy,
   EventPattern,
@@ -17,21 +17,16 @@ export class StripeController {
     private readonly stripeService: StripeService,
   ) {}
 
-  reply(event: string, data: any) {
-    this.client.emit(`${EVENT_PREFIX}_${event}`, data);
-  }
-
-  // @Get()
-  // getHello() {
-  //   try {
-  //     this.reply('created', { hi: 'Hello there ', service: EVENT_PREFIX });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
   @MessagePattern(`${EVENT_PREFIX}_checkout`)
   checkOut(data: any) {
     return this.stripeService.checkout(data);
+  }
+
+  @Post('webhooks')
+  handleWebhook(
+    @Body() event: any,
+    @Headers('stripe-signature') header: string,
+  ) {
+    return this.stripeService.handleWebhook(event, header, EVENT_PREFIX);
   }
 }

@@ -4,7 +4,7 @@ import { RmqOptions } from '@nestjs/microservices';
 import { RmqService } from './rmq';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bodyParser: false });
   const rmqService = app.get<RmqService>(RmqService);
   app.connectMicroservice<RmqOptions>(rmqService.getOptions('PAYMENT', true));
   await app.startAllMicroservices();

@@ -70,7 +70,7 @@ const CartDetails = () => {
   // payment integration
   const makePayment = async () => {
     const stripe = await loadStripe(
-      "pk_test_51OZ9KlDr8UFKRjaPQl5EL00qgDizNLPHmRN06IAPusiYU6xpB7jTyLSLYfJhTdVZkYcupVVu4zVwsYvQJHDNZVvb00DkhTFXSD"
+      "pk_test_51OZB5ZB2KnGaDnZaVqCzcVvfTpCbMJZzeVX5FrZMlY4BCxcvKpatwAmsIWCNspSy55DzpQE8w1lfyAz4JWdC7h3U00nGu1eVpj"
     );
     console.log(stripe);
     const body = {
