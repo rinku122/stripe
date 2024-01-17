@@ -30,8 +30,6 @@ export class StripeService {
       quantity: product.qnty,
     }));
 
-    console.log(lineItems);
-
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
@@ -47,8 +45,6 @@ export class StripeService {
     const endpointSecret = 'whsec_EZUNR6KrnSwMWKDi68vuv0FyLC9yVd0f';
     let event: any;
 
-    console.log(req);
-
     try {
       event = this.stripe.webhooks.constructEvent(
         req,
@@ -62,7 +58,6 @@ export class StripeService {
 
     this.reply('webhook_resp', event, EVENT_PREFIX);
 
-    console.log(event);
     // switch (event.type) {
     //   case 'payment_intent.succeeded':
     //     console.log(`payment_intent.succeeded : `, event.data.object);
@@ -86,7 +81,7 @@ export class StripeService {
     return { received: true };
   }
 
-  reply(event: string, data: any, EVENT_PREFIX: string) {
+  private reply(event: string, data: any, EVENT_PREFIX: string) {
     this.client.emit(`${EVENT_PREFIX}_${event}`, data);
   }
 }

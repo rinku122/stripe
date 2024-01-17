@@ -16,11 +16,6 @@ export class AppController {
     console.log(data, 'client');
   }
 
-  @EventPattern('stripe_created')
-  async hello5(data: any) {
-    console.log(data, 'client');
-  }
-
   @Get('razorpay')
   getHello() {
     this.client.emit('razorpay_created', { hi: 'Hello there ' });
@@ -29,5 +24,10 @@ export class AppController {
   @Post('stripe')
   getHelloS(@Body() body: any) {
     return lastValueFrom(this.client.send('stripe_checkout', body));
+  }
+
+  @EventPattern('stripe_webhook_resp')
+  async hello5(data: any) {
+    console.log(data, 'client');
   }
 }

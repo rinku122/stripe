@@ -9,7 +9,6 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { StripeModule } from './stripe/stripe.module';
 import { RawBodyMiddleware } from './middleware/raw-body.middleware';
-import { JsonBodyMiddleware } from './middleware/json-body.middleware';
 
 @Module({
   imports: [
@@ -27,13 +26,12 @@ import { JsonBodyMiddleware } from './middleware/json-body.middleware';
 })
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
-    consumer
-      .apply(RawBodyMiddleware)
-      .forRoutes({
-        path: '/stripe/webhooks',
-        method: RequestMethod.POST,
-      })
-      .apply(JsonBodyMiddleware)
-      .forRoutes('*');
+    consumer.apply(RawBodyMiddleware).forRoutes({
+      path: '/stripe/webhooks',
+      method: RequestMethod.POST,
+    });
+    //Uncomment below in case of another route
+    // .apply(JsonBodyMiddleware)
+    // .forRoutes('*');
   }
 }
