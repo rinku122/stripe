@@ -34,8 +34,8 @@ export class StripeService {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: this.configService.get('STRIPE_SUCCESS_PAGE'),
-      cancel_url: this.configService.get('STRIPE_CANCEL_PAGE'),
+      success_url: this.configService.get('SUCCESS_PAGE'),
+      cancel_url: this.configService.get('CANCEL_PAGE'),
     });
 
     return { id: session.id };

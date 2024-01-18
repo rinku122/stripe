@@ -15,9 +15,8 @@ export class PhonePayService {
       merchantUserId: body.MUID,
       name: body.name,
       amount: body.amount * 100,
-      // redirectUrl: `http://localhost:8001/phonepay/status/${merchantTransactionId}`,
-      // redirectMode: 'POST',
-      redirectUrl: this.configService.get('STRIPE_SUCCESS_PAGE'),
+      redirectUrl: `${this.configService.get('BASE_URL')}/phonepay/status/${merchantTransactionId}`,
+      redirectMode: 'POST',
       mobileNumber: body.number,
       paymentInstrument: {
         type: 'PAY_PAGE',
@@ -51,7 +50,7 @@ export class PhonePayService {
     return { url: res.data.data.instrumentResponse.redirectInfo.url };
   }
 
-  async checkStatus(merchantTransactionId: string, EVENT_PREFIX: string) {
+  async checkStatus(merchantTransactionId: string, res: any) {
     const keyIndex = this.configService.get('KEY_INDEX');
     const merchantId = this.configService.get('MERCHANT_ID');
 
@@ -74,11 +73,11 @@ export class PhonePayService {
       },
     };
 
-    const res = await axios(options);
-    if (res.data.success === true) {
-      return { success: true, message: 'Payment Success', data: res.data };
+    const response = await axios(options);
+    if (response.data.success === true) {
+      res.redirect(this.configService.get('SUCCESS_PAGE'));
     } else {
-      return { success: false, message: 'Payment Failure', data: res.data };
+      res.redirect(this.configService.get('CANCEL_PAGE'));
     }
   }
 }

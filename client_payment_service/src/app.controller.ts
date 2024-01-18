@@ -33,9 +33,4 @@ export class AppController {
   async phonepay(@Body() body: any) {
     return lastValueFrom(this.client.send('phonepay_checkout', body));
   }
-
-  @Post('phonepay_status')
-  async phonePayResponse(data: any) {
-    return lastValueFrom(this.client.send('phonepay_status', 'T1705582963005'));
-  }
 }
