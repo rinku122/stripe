@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Post, Headers } from '@nestjs/common';
+import { Body, Controller, Post, Headers } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { StripeService } from './stripe.service';
 

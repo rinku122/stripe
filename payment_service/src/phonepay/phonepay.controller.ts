@@ -1,4 +1,4 @@
-import { Controller, Post, Param } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { PhonePayService } from './phonepay.service';
 
@@ -10,11 +10,11 @@ export class PhonePayController {
 
   @MessagePattern(`${EVENT_PREFIX}_checkout`)
   checkOut(data: any) {
-    return this.stripeService.checkout();
+    return this.stripeService.checkout(data);
   }
 
-  @Post('status/:id')
-  checkStatus(@Param('id') id: string) {
-    return this.stripeService.checkStatus(id, EVENT_PREFIX);
+  @MessagePattern(`${EVENT_PREFIX}_status`)
+  async checkStatus(data: any) {
+    return this.stripeService.checkStatus(data, EVENT_PREFIX);
   }
 }

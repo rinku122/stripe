@@ -1,31 +1,13 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ClientProxy } from '@nestjs/microservices';
-import { PAYMENT_SERVICE } from 'src/services/services';
 const crypto = require('crypto');
 import axios from 'axios';
 
-// import Stripe from 'stripe';
-
 @Injectable()
 export class PhonePayService {
-  // private readonly stripe: Stripe;
+  constructor(private readonly configService: ConfigService) {}
 
-  constructor(
-    private readonly configService: ConfigService,
-    @Inject(PAYMENT_SERVICE)
-    private readonly client: ClientProxy,
-  ) {}
-
-  async checkout() {
-    const body = {
-      name: 'Waleed',
-      amount: 1,
-      number: '7498608775',
-      MUID: 'MUID' + Date.now(),
-      transactionId: 'T' + Date.now(),
-    };
-
+  async checkout(body: any) {
     const merchantTransactionId = body.transactionId;
     const data = {
       merchantId: this.configService.get('MERCHANT_ID'),
@@ -33,8 +15,9 @@ export class PhonePayService {
       merchantUserId: body.MUID,
       name: body.name,
       amount: body.amount * 100,
-      redirectUrl: `http://localhost:8001/phonepay/status/${merchantTransactionId}`,
-      redirectMode: 'POST',
+      // redirectUrl: `http://localhost:8001/phonepay/status/${merchantTransactionId}`,
+      // redirectMode: 'POST',
+      redirectUrl: this.configService.get('STRIPE_SUCCESS_PAGE'),
       mobileNumber: body.number,
       paymentInstrument: {
         type: 'PAY_PAGE',
@@ -45,7 +28,7 @@ export class PhonePayService {
 
     const payloadMain = Buffer.from(payload).toString('base64');
 
-    const keyIndex = 1;
+    const keyIndex = this.configService.get('KEY_INDEX');
     const string =
       payloadMain + '/pg/v1/pay' + this.configService.get('SALTKEY');
     const sha256 = crypto.createHash('sha256').update(string).digest('hex');
@@ -68,12 +51,8 @@ export class PhonePayService {
     return { url: res.data.data.instrumentResponse.redirectInfo.url };
   }
 
-  private reply(event: string, data: any, EVENT_PREFIX: string) {
-    this.client.emit(`${EVENT_PREFIX}_${event}`, data);
-  }
-
   async checkStatus(merchantTransactionId: string, EVENT_PREFIX: string) {
-    const keyIndex = 1;
+    const keyIndex = this.configService.get('KEY_INDEX');
     const merchantId = this.configService.get('MERCHANT_ID');
 
     const string =
@@ -96,12 +75,10 @@ export class PhonePayService {
     };
 
     const res = await axios(options);
-    this.reply('webhook_resp', res.data, EVENT_PREFIX);
-    // if (res.data.success === true) {
-    //   console.log(res.data);
-    //   return { success: true, message: 'Payment Success' };
-    // } else {
-    //   return { success: false, message: 'Payment Failure' };
-    // }
+    if (res.data.success === true) {
+      return { success: true, message: 'Payment Success', data: res.data };
+    } else {
+      return { success: false, message: 'Payment Failure', data: res.data };
+    }
   }
 }
