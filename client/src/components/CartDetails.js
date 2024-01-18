@@ -105,9 +105,18 @@ const CartDetails = () => {
     const headers = {
       "Content-Type": "application/json",
     };
+    const data = {
+      name: "Waleed",
+      amount: totalprice,
+      number: "7498608775",
+      MUID: "MUID" + Date.now(),
+      transactionId: "T" + Date.now(),
+    };
+
     const response = await fetch("http://localhost:8000/phonepay", {
       method: "POST",
       headers: headers,
+      body: JSON.stringify(data),
     });
     const url = (await response.json()).url;
 
