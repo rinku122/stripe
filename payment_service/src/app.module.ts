@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { StripeModule } from './stripe/stripe.module';
 import { RawBodyMiddleware } from './middleware/raw-body.middleware';
+import { PhonepayModule } from './phonepay/phonepay.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { RawBodyMiddleware } from './middleware/raw-body.middleware';
     }),
     RazorpayModule,
     StripeModule,
+    PhonepayModule,
   ],
 })
 export class AppModule implements NestModule {

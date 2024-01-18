@@ -67,37 +67,51 @@ const CartDetails = () => {
     countquantity();
   }, [countquantity]);
 
-  // payment integration
+  // payment integration stripe
+  // const makePayment = async () => {
+  //   const stripe = await loadStripe(
+  //     "pk_test_51OZB5ZB2KnGaDnZaVqCzcVvfTpCbMJZzeVX5FrZMlY4BCxcvKpatwAmsIWCNspSy55DzpQE8w1lfyAz4JWdC7h3U00nGu1eVpj"
+  //   );
+  //   console.log(stripe);
+  //   const body = {
+  //     products: carts,
+  //   };
+  //   const headers = {
+  //     "Content-Type": "application/json",
+  //   };
+  //   const response = await fetch("http://localhost:8000/stripe", {
+  //     method: "POST",
+  //     headers: headers,
+  //     body: JSON.stringify(body),
+  //   });
+
+  //   console.log(body);
+
+  //   const session = await response.json();
+
+  //   console.log(session);
+
+  //   const result = stripe.redirectToCheckout({
+  //     sessionId: session.id,
+  //   });
+
+  //   if (result.error) {
+  //     console.log(result.error);
+  //   }
+  // };
+
+  //Phonepay
   const makePayment = async () => {
-    const stripe = await loadStripe(
-      "pk_test_51OZB5ZB2KnGaDnZaVqCzcVvfTpCbMJZzeVX5FrZMlY4BCxcvKpatwAmsIWCNspSy55DzpQE8w1lfyAz4JWdC7h3U00nGu1eVpj"
-    );
-    console.log(stripe);
-    const body = {
-      products: carts,
-    };
     const headers = {
       "Content-Type": "application/json",
     };
-    const response = await fetch("http://localhost:8000/stripe", {
+    const response = await fetch("http://localhost:8000/phonepay", {
       method: "POST",
       headers: headers,
-      body: JSON.stringify(body),
     });
+    const url = (await response.json()).url;
 
-    console.log(body);
-
-    const session = await response.json();
-
-    console.log(session);
-
-    const result = stripe.redirectToCheckout({
-      sessionId: session.id,
-    });
-
-    if (result.error) {
-      console.log(result.error);
-    }
+    window.location.href = url;
   };
 
   return (
