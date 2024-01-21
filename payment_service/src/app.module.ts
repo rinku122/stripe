@@ -10,6 +10,7 @@ import * as Joi from 'joi';
 import { StripeModule } from './stripe/stripe.module';
 import { RawBodyMiddleware } from './middleware/raw-body.middleware';
 import { PhonepayModule } from './phonepay/phonepay.module';
+import { JsonBodyMiddleware } from './middleware/json-body.middleware';
 
 @Module({
   imports: [
@@ -26,14 +27,4 @@ import { PhonepayModule } from './phonepay/phonepay.module';
     PhonepayModule,
   ],
 })
-export class AppModule implements NestModule {
-  public configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(RawBodyMiddleware).forRoutes({
-      path: '/stripe/webhooks',
-      method: RequestMethod.POST,
-    });
-    //Uncomment below in case of another route
-    // .apply(JsonBodyMiddleware)
-    // .forRoutes('*');
-  }
-}
+export class AppModule {}

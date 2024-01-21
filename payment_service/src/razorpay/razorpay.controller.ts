@@ -1,6 +1,11 @@
-import { Controller, Get, Inject } from '@nestjs/common';
-import { ClientProxy, EventPattern } from '@nestjs/microservices';
+import { Body, Controller, Get, Headers, Inject, Post } from '@nestjs/common';
+import {
+  ClientProxy,
+  EventPattern,
+  MessagePattern,
+} from '@nestjs/microservices';
 import { PAYMENT_SERVICE } from 'src/services/services';
+import { RazorpayService } from './razorpay.service';
 
 const EVENT_PREFIX = 'razorpay';
 @Controller(EVENT_PREFIX)
@@ -8,23 +13,20 @@ export class RazorpayController {
   constructor(
     @Inject(PAYMENT_SERVICE)
     private readonly client: ClientProxy,
+    private readonly razorpayService: RazorpayService,
   ) {}
 
   reply(event: string, data: any) {
     this.client.emit(`${EVENT_PREFIX}_${event}`, data);
   }
 
-  @Get()
-  getHello() {
-    try {
-      this.reply('created', { hi: 'Hello there ', service: EVENT_PREFIX });
-    } catch (error) {
-      console.log(error);
-    }
+  @MessagePattern(`${EVENT_PREFIX}_checkout`)
+  checkout(data: any) {
+    return this.razorpayService.checkout(data);
   }
 
-  @EventPattern(`${EVENT_PREFIX}_created`)
-  async hello(data: any) {
-    console.log(data, 'razorpay');
+  @Post('status')
+  handleWebhook(@Body() event: any) {
+    return this.razorpayService.handleWebhook(event, EVENT_PREFIX);
   }
 }

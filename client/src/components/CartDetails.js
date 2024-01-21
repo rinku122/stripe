@@ -12,7 +12,6 @@ import { loadStripe } from "@stripe/stripe-js";
 
 const CartDetails = () => {
   const { carts } = useSelector((state) => state.allCart);
-  console.log(carts);
 
   const [totalprice, setPrice] = useState(0);
   const [totalquantity, setTotalQuantity] = useState(0);
@@ -107,7 +106,7 @@ const CartDetails = () => {
     };
     const data = {
       name: "Waleed",
-      amount: totalprice,
+      amount: totalprice * 100,
       number: "7498608775",
       MUID: "MUID" + Date.now(),
       transactionId: "T" + Date.now(),
@@ -122,6 +121,53 @@ const CartDetails = () => {
 
     window.location.href = url;
   };
+
+  // Razorpay;
+  // const makePayment = async () => {
+  //   const request = {
+  //     amount: totalprice,
+  //     currency: "INR",
+  //     receipt: `ant_user`,
+  //     payment_capture: 1,
+  //   };
+
+  //   const headers = {
+  //     "Content-Type": "application/json",
+  //   };
+
+  //   let response = await fetch("http://localhost:8000/razorpay", {
+  //     method: "POST",
+  //     headers: headers,
+  //     body: JSON.stringify(request),
+  //   });
+
+  //   response = await response.json();
+
+  //   var options = {
+  //     key: "rzp_test_NjdVZ6X9z6uZe4", // Enter the Key ID generated from the Dashboard
+  //     amount: response.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+  //     currency: "INR",
+  //     name: "Acme Corp",
+  //     description: "Test Transaction",
+  //     image: "https://avatars.githubusercontent.com/u/25058652?v=4",
+  //     order_id: response.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+  //     callback_url: "http://localhost:8001/razorpay/status",
+  //     prefill: {
+  //       name: "Rajesh Kumar",
+  //       email: "rajesh.kumar@antiersolutions.com",
+  //       contact: "9000090000",
+  //     },
+
+  //     notes: {
+  //       address: "Razorpay Corporate Office",
+  //     },
+  //     theme: {
+  //       color: "#32a86d",
+  //     },
+  //   };
+  //   const razor = new window.Razorpay(options);
+  //   razor.open();
+  // };
 
   return (
     <>

@@ -1,21 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ClientProxy } from '@nestjs/microservices';
 const crypto = require('crypto');
 import axios from 'axios';
+import { lastValueFrom } from 'rxjs';
+import { PAYMENT_SERVICE } from 'src/services/services';
 
 @Injectable()
 export class PhonePayService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    @Inject(PAYMENT_SERVICE)
+    private readonly client: ClientProxy,
+  ) {}
 
-  async checkout(body: any) {
+  async checkout(body: any, EVENT_PREFIX: string) {
     const merchantTransactionId = body.transactionId;
     const data = {
       merchantId: this.configService.get('MERCHANT_ID'),
       merchantTransactionId: merchantTransactionId,
       merchantUserId: body.MUID,
       name: body.name,
-      amount: body.amount * 100,
-      redirectUrl: `${this.configService.get('BASE_URL')}/phonepay/status/${merchantTransactionId}`,
+      amount: body.amount,
+      redirectUrl: `${this.configService.get('BASE_URL')}/phonepay/webhook`,
       redirectMode: 'POST',
       mobileNumber: body.number,
       paymentInstrument: {
@@ -47,15 +54,32 @@ export class PhonePayService {
     };
 
     const res = await axios(options);
+    this.reply('payment_intent', res.data, EVENT_PREFIX);
     return { url: res.data.data.instrumentResponse.redirectInfo.url };
   }
 
-  async checkStatus(merchantTransactionId: string, res: any) {
+  async webhook(
+    body: any,
+    res: any,
+    EVENT_PREFIX: string,
+    byPhonePay: boolean = true,
+  ) {
+    //Check for transaction id and amount
+
+    const { merchantId, transactionId, amount } = body;
+
+    const merchantIdSafe = this.configService.get('MERCHANT_ID');
+
+    const safeAmount = await lastValueFrom(
+      this.client.send(`${EVENT_PREFIX}_validate`, transactionId),
+    );
+    if (!safeAmount || amount !== safeAmount || merchantIdSafe !== merchantId)
+      throw new BadRequestException();
+
     const keyIndex = this.configService.get('KEY_INDEX');
-    const merchantId = this.configService.get('MERCHANT_ID');
 
     const string =
-      `/pg/v1/status/${merchantId}/${merchantTransactionId}` +
+      `/pg/v1/status/${merchantId}/${transactionId}` +
       this.configService.get('SALTKEY');
 
     const sha256 = crypto.createHash('sha256').update(string).digest('hex');
@@ -64,7 +88,7 @@ export class PhonePayService {
 
     const options = {
       method: 'GET',
-      url: `${this.configService.get('PHONEPE_URL')}status/${merchantId}/${merchantTransactionId}`,
+      url: `${this.configService.get('PHONEPE_URL')}status/${merchantId}/${transactionId}`,
       headers: {
         accept: 'application/json',
         'Content-Type': 'application/json',
@@ -73,11 +97,28 @@ export class PhonePayService {
       },
     };
 
-    const response = await axios(options);
-    if (response.data.success === true) {
-      res.redirect(this.configService.get('SUCCESS_PAGE'));
-    } else {
-      res.redirect(this.configService.get('CANCEL_PAGE'));
+    try {
+      const response = await axios(options);
+      // Incase of success redirect user to success page
+      if (byPhonePay) {
+        if (response?.data?.code === 'PAYMENT_SUCCESS') {
+          res.redirect(this.configService.get('SUCCESS_PAGE'));
+        } else {
+          // Otherthen success it can be pending of failed, so taking user to another page.
+          res.redirect(this.configService.get('CANCEL_PAGE'));
+        }
+        //  Sending respone of payment to client service.
+        this.reply('webhook_resp', response.data, EVENT_PREFIX);
+      } else {
+        res.json(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+      if (!byPhonePay) res.json(error);
     }
+  }
+
+  private reply(event: string, data: any, EVENT_PREFIX: string) {
+    this.client.emit(`${EVENT_PREFIX}_${event}`, data);
   }
 }

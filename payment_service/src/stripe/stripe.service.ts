@@ -42,7 +42,7 @@ export class StripeService {
   }
 
   async handleWebhook(req: any, signature: string, EVENT_PREFIX: string) {
-    const endpointSecret = 'whsec_EZUNR6KrnSwMWKDi68vuv0FyLC9yVd0f';
+    const endpointSecret = 'whsec_EZUNR6KrnSwMWKDi68vuv0FyLC9yVd0f'; //Keep this in env.
     let event: any;
 
     try {
