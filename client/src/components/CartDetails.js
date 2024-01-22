@@ -87,6 +87,9 @@ const CartDetails = () => {
 
     const body = {
       lineItems,
+      metadata: {
+        user_id: "Rajesh_319",
+      },
     };
     const headers = {
       "Content-Type": "application/json",
@@ -161,6 +164,7 @@ const CartDetails = () => {
       image: "https://avatars.githubusercontent.com/u/25058652?v=4",
       order_id: response.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
       callback_url: "http://localhost:8001/razorpay/status",
+      cancel_url: "http://localhost:3000/cancel",
       prefill: {
         name: "Rajesh Kumar",
         email: "rajesh.kumar@antiersolutions.com",

@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { StripeModule } from './stripe/stripe.module';
 import { PhonepayModule } from './phonepay/phonepay.module';
+import { CoinbaseCommerceModule } from './coinbaseCommerce/coinbaseCommerce.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PhonepayModule } from './phonepay/phonepay.module';
     RazorpayModule,
     StripeModule,
     PhonepayModule,
+    CoinbaseCommerceModule
   ],
 })
 export class AppModule {}
