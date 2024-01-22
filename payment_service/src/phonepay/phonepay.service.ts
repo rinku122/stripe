@@ -54,6 +54,10 @@ export class PhonePayService {
     };
 
     const res = await axios(options);
+
+    // console.log(body.amount);
+    // console.log(res.data.data.merchantTransactionId);
+
     this.reply('payment_intent', res.data, EVENT_PREFIX);
     return { url: res.data.data.instrumentResponse.redirectInfo.url };
   }
@@ -62,7 +66,7 @@ export class PhonePayService {
     body: any,
     res: any,
     EVENT_PREFIX: string,
-    byPhonePay: boolean = true,
+    isWebHook: boolean = true,
   ) {
     //Check for transaction id and amount
 
@@ -100,7 +104,7 @@ export class PhonePayService {
     try {
       const response = await axios(options);
       // Incase of success redirect user to success page
-      if (byPhonePay) {
+      if (isWebHook) {
         if (response?.data?.code === 'PAYMENT_SUCCESS') {
           res.redirect(this.configService.get('SUCCESS_PAGE'));
         } else {
@@ -114,7 +118,7 @@ export class PhonePayService {
       }
     } catch (error) {
       console.log(error);
-      if (!byPhonePay) res.json(error);
+      if (!isWebHook) res.json(error);
     }
   }
 

@@ -32,23 +32,30 @@ export class AppController {
   @MessagePattern('phonepay_validate')
   async phonePayValidate(data: any) {
     const db = {
-      T1705864582908: {
-        amount: '35000',
+      T1705916331639: {
+        amount: '42000',
       },
     };
     if (!db[data]) return null;
     return db[data]?.amount;
   }
 
-  // @Post('stripe')
-  // stripe(@Body() body: any) {
-  //   return lastValueFrom(this.client.send('stripe_checkout', body));
-  // }
+  //Stripe
 
-  // @EventPattern('stripe_webhook_resp')
-  // async stripeResponse(data: any) {
-  //   console.log(data, 'client');
-  // }
+  @Post('stripe')
+  stripe(@Body() body: any) {
+    return lastValueFrom(this.client.send('stripe_checkout', body));
+  }
+
+  @EventPattern('stripe_payment_intent')
+  async stripePayintent(data: any) {
+    console.log(data, 'client');
+  }
+
+  @EventPattern('stripe_webhook_resp')
+  async stripeResponse(data: any) {
+    console.log(data, 'client');
+  }
 
   // @Post('razorpay')
   // razorpay(@Body() body: any) {

@@ -16,19 +16,8 @@ export class StripeService {
     this.stripe = new Stripe(this.configService.get('STRIPE_SK'));
   }
 
-  async checkout(data: any) {
-    const { products } = data;
-    const lineItems = products.map((product: any) => ({
-      price_data: {
-        currency: 'inr',
-        product_data: {
-          name: product.dish,
-          images: [product.imgdata],
-        },
-        unit_amount: product.price * 100,
-      },
-      quantity: product.qnty,
-    }));
+  async checkout(data: any, EVENT_PREFIX: string) {
+    const { lineItems } = data;
 
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -37,7 +26,7 @@ export class StripeService {
       success_url: this.configService.get('SUCCESS_PAGE'),
       cancel_url: this.configService.get('CANCEL_PAGE'),
     });
-
+    this.reply('payment_intent', session, EVENT_PREFIX);
     return { id: session.id };
   }
 

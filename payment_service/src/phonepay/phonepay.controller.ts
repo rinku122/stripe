@@ -14,12 +14,13 @@ export class PhonePayController {
   }
 
   @Post('webhook')
-  webhook(@Body() body: string, @Res() res: any) {
+  webhook(@Body() body: any, @Res() res: any) {
     return this.stripeService.webhook(body, res, EVENT_PREFIX);
   }
 
+  //If webhook doesn't work, so checking manually.For phonepay its done.
   @Post('status')
-  getStatus(@Body() body: string, @Res() res: any) {
+  getStatus(@Body() body: any, @Res() res: any) {
     return this.stripeService.webhook(body, res, EVENT_PREFIX, false);
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Headers } from '@nestjs/common';
+import { Controller, Post, Headers, Req, Res } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { StripeService } from './stripe.service';
 
@@ -10,14 +10,11 @@ export class StripeController {
 
   @MessagePattern(`${EVENT_PREFIX}_checkout`)
   checkOut(data: any) {
-    return this.stripeService.checkout(data);
+    return this.stripeService.checkout(data, EVENT_PREFIX);
   }
 
   @Post('webhooks')
-  handleWebhook(
-    @Body() event: any,
-    @Headers('stripe-signature') header: string,
-  ) {
-    return this.stripeService.handleWebhook(event, header, EVENT_PREFIX);
+  handleWebhook(@Headers('stripe-signature') header: string, @Req() req: any) {
+    return this.stripeService.handleWebhook(req.rawBody, header, EVENT_PREFIX);
   }
 }

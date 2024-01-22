@@ -67,40 +67,49 @@ const CartDetails = () => {
   }, [countquantity]);
 
   // payment integration stripe
-  // const makePayment = async () => {
-  //   const stripe = await loadStripe(
-  //     "pk_test_51OZB5ZB2KnGaDnZaVqCzcVvfTpCbMJZzeVX5FrZMlY4BCxcvKpatwAmsIWCNspSy55DzpQE8w1lfyAz4JWdC7h3U00nGu1eVpj"
-  //   );
-  //   console.log(stripe);
-  //   const body = {
-  //     products: carts,
-  //   };
-  //   const headers = {
-  //     "Content-Type": "application/json",
-  //   };
-  //   const response = await fetch("http://localhost:8000/stripe", {
-  //     method: "POST",
-  //     headers: headers,
-  //     body: JSON.stringify(body),
-  //   });
+  const makePaymentStripe = async () => {
+    const stripe = await loadStripe(
+      "pk_test_51OZB5ZB2KnGaDnZaVqCzcVvfTpCbMJZzeVX5FrZMlY4BCxcvKpatwAmsIWCNspSy55DzpQE8w1lfyAz4JWdC7h3U00nGu1eVpj"
+    );
+    console.log(stripe);
 
-  //   console.log(body);
+    const lineItems = carts.map((product) => ({
+      price_data: {
+        currency: "inr",
+        product_data: {
+          name: product.dish,
+          images: [product.imgdata],
+        },
+        unit_amount: product.price * 100,
+      },
+      quantity: product.qnty,
+    }));
 
-  //   const session = await response.json();
+    const body = {
+      lineItems,
+    };
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    const response = await fetch("http://localhost:8000/stripe", {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(body),
+    });
 
-  //   console.log(session);
+    const session = await response.json();
 
-  //   const result = stripe.redirectToCheckout({
-  //     sessionId: session.id,
-  //   });
+    const result = stripe.redirectToCheckout({
+      sessionId: session.id,
+    });
 
-  //   if (result.error) {
-  //     console.log(result.error);
-  //   }
-  // };
+    if (result.error) {
+      console.log(result.error);
+    }
+  };
 
-  //Phonepay
-  const makePayment = async () => {
+  // Phonepay
+  const makePaymentPhonepay = async () => {
     const headers = {
       "Content-Type": "application/json",
     };
@@ -300,10 +309,17 @@ const CartDetails = () => {
                       <th className="text-right">
                         <button
                           className="btn btn-success"
-                          onClick={makePayment}
+                          onClick={makePaymentStripe}
                           type="button"
                         >
-                          Checkout
+                          Checkout-Stripe
+                        </button>
+                        <button
+                          className="btn btn-success"
+                          onClick={makePaymentPhonepay}
+                          type="button"
+                        >
+                          Checkout-PhonePay
                         </button>
                       </th>
                     </tr>
