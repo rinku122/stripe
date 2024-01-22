@@ -1,16 +1,9 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { RazorpayModule } from './razorpay/razorpay.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { StripeModule } from './stripe/stripe.module';
-import { RawBodyMiddleware } from './middleware/raw-body.middleware';
 import { PhonepayModule } from './phonepay/phonepay.module';
-import { JsonBodyMiddleware } from './middleware/json-body.middleware';
 
 @Module({
   imports: [

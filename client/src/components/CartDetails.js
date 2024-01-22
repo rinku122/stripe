@@ -132,51 +132,52 @@ const CartDetails = () => {
   };
 
   // Razorpay;
-  // const makePayment = async () => {
-  //   const request = {
-  //     amount: totalprice,
-  //     currency: "INR",
-  //     receipt: `ant_user`,
-  //     payment_capture: 1,
-  //   };
+  const makePaymentRazorpay = async (e) => {
+    const request = {
+      amount: totalprice * 100,
+      currency: "INR",
+      receipt: `ant_user`,
+      payment_capture: 1,
+    };
 
-  //   const headers = {
-  //     "Content-Type": "application/json",
-  //   };
+    const headers = {
+      "Content-Type": "application/json",
+    };
 
-  //   let response = await fetch("http://localhost:8000/razorpay", {
-  //     method: "POST",
-  //     headers: headers,
-  //     body: JSON.stringify(request),
-  //   });
+    let response = await fetch("http://localhost:8000/razorpay", {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(request),
+    });
 
-  //   response = await response.json();
+    response = await response.json();
 
-  //   var options = {
-  //     key: "rzp_test_NjdVZ6X9z6uZe4", // Enter the Key ID generated from the Dashboard
-  //     amount: response.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-  //     currency: "INR",
-  //     name: "Acme Corp",
-  //     description: "Test Transaction",
-  //     image: "https://avatars.githubusercontent.com/u/25058652?v=4",
-  //     order_id: response.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-  //     callback_url: "http://localhost:8001/razorpay/status",
-  //     prefill: {
-  //       name: "Rajesh Kumar",
-  //       email: "rajesh.kumar@antiersolutions.com",
-  //       contact: "9000090000",
-  //     },
+    var options = {
+      key: "rzp_test_NjdVZ6X9z6uZe4", // Enter the Key ID generated from the Dashboard
+      amount: response.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      currency: "INR",
+      name: "Acme Corp",
+      description: "Test Transaction",
+      image: "https://avatars.githubusercontent.com/u/25058652?v=4",
+      order_id: response.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      callback_url: "http://localhost:8001/razorpay/status",
+      prefill: {
+        name: "Rajesh Kumar",
+        email: "rajesh.kumar@antiersolutions.com",
+        contact: "9000090000",
+      },
 
-  //     notes: {
-  //       address: "Razorpay Corporate Office",
-  //     },
-  //     theme: {
-  //       color: "#32a86d",
-  //     },
-  //   };
-  //   const razor = new window.Razorpay(options);
-  //   razor.open();
-  // };
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#32a86d",
+      },
+    };
+    const razor = new window.Razorpay(options);
+    razor.open();
+    e.preventDefault();
+  };
 
   return (
     <>
@@ -308,6 +309,7 @@ const CartDetails = () => {
                       </th>
                       <th className="text-right">
                         <button
+                          style={{ marginLeft: "5px" }}
                           className="btn btn-success"
                           onClick={makePaymentStripe}
                           type="button"
@@ -315,11 +317,20 @@ const CartDetails = () => {
                           Checkout-Stripe
                         </button>
                         <button
+                          style={{ marginLeft: "5px" }}
                           className="btn btn-success"
                           onClick={makePaymentPhonepay}
                           type="button"
                         >
                           Checkout-PhonePay
+                        </button>
+                        <button
+                          style={{ marginLeft: "5px" }}
+                          className="btn btn-success"
+                          onClick={makePaymentRazorpay}
+                          type="button"
+                        >
+                          Checkout-Razorpay
                         </button>
                       </th>
                     </tr>

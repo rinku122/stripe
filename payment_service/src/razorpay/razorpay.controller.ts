@@ -1,32 +1,19 @@
-import { Body, Controller, Get, Headers, Inject, Post } from '@nestjs/common';
-import {
-  ClientProxy,
-  EventPattern,
-  MessagePattern,
-} from '@nestjs/microservices';
-import { PAYMENT_SERVICE } from 'src/services/services';
+import { Body, Controller, Inject, Post, Res } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
 import { RazorpayService } from './razorpay.service';
 
 const EVENT_PREFIX = 'razorpay';
 @Controller(EVENT_PREFIX)
 export class RazorpayController {
-  constructor(
-    @Inject(PAYMENT_SERVICE)
-    private readonly client: ClientProxy,
-    private readonly razorpayService: RazorpayService,
-  ) {}
-
-  reply(event: string, data: any) {
-    this.client.emit(`${EVENT_PREFIX}_${event}`, data);
-  }
+  constructor(private readonly razorpayService: RazorpayService) {}
 
   @MessagePattern(`${EVENT_PREFIX}_checkout`)
   checkout(data: any) {
-    return this.razorpayService.checkout(data);
+    return this.razorpayService.checkout(data, EVENT_PREFIX);
   }
 
   @Post('status')
-  handleWebhook(@Body() event: any) {
-    return this.razorpayService.handleWebhook(event, EVENT_PREFIX);
+  handleWebhook(@Body() event: any, @Res() res: Response) {
+    return this.razorpayService.handleWebhook(event, EVENT_PREFIX,res);
   }
 }

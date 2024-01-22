@@ -57,13 +57,19 @@ export class AppController {
     console.log(data, 'client');
   }
 
-  // @Post('razorpay')
-  // razorpay(@Body() body: any) {
-  //   return lastValueFrom(this.client.send('razorpay_checkout', body));
-  // }
+  //Razorpay
+  @Post('razorpay')
+  razorpay(@Body() body: any) {
+    return lastValueFrom(this.client.send('razorpay_checkout', body));
+  }
 
-  // @EventPattern('razorpay_webhook_resp')
-  // async razorpayResponse(data: any) {
-  //   console.log(data, 'client');
-  // }
+  @EventPattern('razorpay_payment_intent')
+  async razorpayPayintent(data: any) {
+    console.log(data, 'client');
+  }
+
+  @EventPattern('razorpay_webhook_resp')
+  async razorpayResponse(data: any) {
+    console.log(data, 'client');
+  }
 }

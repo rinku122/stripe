@@ -19,9 +19,10 @@ export class RazorpayService {
     });
   }
 
-  async checkout(options: any) {
+  async checkout(options: any, EVENT_PREFIX: string) {
     try {
       const response = await this.razorpay.orders.create(options);
+      this.reply('payment_intent', response, EVENT_PREFIX);
       return response;
     } catch (error) {
       return new BadRequestException(
@@ -30,7 +31,7 @@ export class RazorpayService {
     }
   }
 
-  async handleWebhook(event: any, EVENT_PREFIX: string) {
+  async handleWebhook(event: any, EVENT_PREFIX: string, res: any) {
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
       event;
     const generated_signature = crypto
@@ -41,6 +42,7 @@ export class RazorpayService {
 
     if (isAuthentic) {
       this.reply('webhook_resp', event, EVENT_PREFIX);
+      res.redirect(this.configService.get('SUCCESS_PAGE'));
     } else {
       console.log(`⚠️ Signature verification failed.`);
     }
