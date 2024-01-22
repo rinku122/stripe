@@ -87,6 +87,8 @@ const CartDetails = () => {
 
     const body = {
       lineItems,
+      mode: "payment",
+      payment_method_types: ["card"],
       metadata: {
         user_id: "Rajesh_319",
       },
@@ -122,6 +124,9 @@ const CartDetails = () => {
       number: "7498608775",
       MUID: "MUID" + Date.now(),
       transactionId: "T" + Date.now(),
+      paymentInstrument: {
+        type: "PAY_PAGE",
+      },
     };
 
     const response = await fetch("http://localhost:8000/phonepay", {
@@ -181,6 +186,44 @@ const CartDetails = () => {
     const razor = new window.Razorpay(options);
     razor.open();
     e.preventDefault();
+  };
+
+  const makePaymentCoinbaseCommerce = async () => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const products = [
+      {
+        id: 1,
+        name: "Small Black Chair",
+        price: 10,
+        currency: "USD",
+        description: "Soft Chair, Best value for Money",
+      },
+      {
+        id: 2,
+        name: "Spoon",
+        price: 2,
+        currency: "USDT",
+        description: "Spoon gets the best value for Money",
+      },
+    ];
+
+    const data = {
+      product: products[0],
+      metadata: { id: products[0].id, userID: 1 },
+      pricing_type: "fixed_price",
+    };
+
+    let response = await fetch("http://localhost:8000/coinbase_commerce", {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(data),
+    });
+    response = await response.json();
+
+    window.location.href = response.hosted_url;
   };
 
   return (
@@ -318,7 +361,7 @@ const CartDetails = () => {
                           onClick={makePaymentStripe}
                           type="button"
                         >
-                          Checkout-Stripe
+                          Stripe
                         </button>
                         <button
                           style={{ marginLeft: "5px" }}
@@ -326,7 +369,7 @@ const CartDetails = () => {
                           onClick={makePaymentPhonepay}
                           type="button"
                         >
-                          Checkout-PhonePay
+                          PhonePay
                         </button>
                         <button
                           style={{ marginLeft: "5px" }}
@@ -334,7 +377,16 @@ const CartDetails = () => {
                           onClick={makePaymentRazorpay}
                           type="button"
                         >
-                          Checkout-Razorpay
+                          Razorpay
+                        </button>
+
+                        <button
+                          style={{ marginLeft: "5px" }}
+                          className="btn btn-success"
+                          onClick={makePaymentCoinbaseCommerce}
+                          type="button"
+                        >
+                          CoinbaseCommerce
                         </button>
                       </th>
                     </tr>

@@ -17,12 +17,12 @@ export class StripeService {
   }
 
   async checkout(data: any, EVENT_PREFIX: string) {
-    const { lineItems, metadata } = data;
+    const { lineItems, metadata, payment_method_types, mode } = data;
 
     const session = await this.stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types,
       line_items: lineItems,
-      mode: 'payment',
+      mode,
       success_url: this.configService.get('SUCCESS_PAGE'),
       cancel_url: this.configService.get('CANCEL_PAGE'),
       metadata,

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import { Body, Controller,  Inject, Post } from '@nestjs/common';
 import {
   ClientProxy,
   EventPattern,
@@ -32,8 +32,8 @@ export class AppController {
   @MessagePattern('phonepay_validate')
   async phonePayValidate(data: any) {
     const db = {
-      T1705916331639: {
-        amount: '42000',
+      T1705933875268: {
+        amount: '35000',
       },
     };
     if (!db[data]) return null;
@@ -70,6 +70,22 @@ export class AppController {
 
   @EventPattern('razorpay_webhook_resp')
   async razorpayResponse(data: any) {
+    console.log(data, 'client');
+  }
+
+  //CoinbaseCommerce
+  @Post('coinbase_commerce')
+  coinbaseCommerce(@Body() body: any) {
+    return lastValueFrom(this.client.send('coinbase_commerce_checkout', body));
+  }
+
+  @EventPattern('coinbase_commerce_payment_intent')
+  async coinbase_commercePayintent(data: any) {
+    console.log(data, 'client');
+  }
+
+  @EventPattern('coinbase_commerce_webhook_resp')
+  async coinbase_commerceResponse(data: any) {
     console.log(data, 'client');
   }
 }

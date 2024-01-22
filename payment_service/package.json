@@ -28,6 +28,7 @@
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.3",
     "axios": "^1.6.5",
+    "coinbase-commerce-node": "^1.0.4",
     "joi": "^17.11.0",
     "razorpay": "^2.9.2",
     "reflect-metadata": "^0.1.13",

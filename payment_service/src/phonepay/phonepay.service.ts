@@ -25,9 +25,7 @@ export class PhonePayService {
       redirectUrl: `${this.configService.get('BASE_URL')}/phonepay/webhook`,
       redirectMode: 'POST',
       mobileNumber: body.number,
-      paymentInstrument: {
-        type: 'PAY_PAGE',
-      },
+      paymentInstrument: body.paymentInstrument,
     };
 
     const payload = JSON.stringify(data);

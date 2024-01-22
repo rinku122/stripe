@@ -1,8 +1,8 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Controller, Post, Headers, Req } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { CoinbaseCommerceService } from './coinbaseCommerce.service';
 
-const EVENT_PREFIX = 'phonepay';
+const EVENT_PREFIX = 'coinbase_commerce';
 
 @Controller(EVENT_PREFIX)
 export class CoinbaseCommerceController {
@@ -13,14 +13,10 @@ export class CoinbaseCommerceController {
     return this.stripeService.checkout(data, EVENT_PREFIX);
   }
 
-  @Post('webhook')
-  webhook(@Body() body: any, @Res() res: any) {
-    return this.stripeService.webhook(body, res, EVENT_PREFIX);
+  @Post('webhooks')
+  handleWebhook(@Headers('x-cc-webhook-signature') signature: string, @Req() req: any) {
+    return this.stripeService.handleWebhook(req.rawBody, signature, EVENT_PREFIX);
   }
 
-  //If webhook doesn't work, so checking manually.For phonepay its done.
-  @Post('status')
-  getStatus(@Body() body: any, @Res() res: any) {
-    return this.stripeService.webhook(body, res, EVENT_PREFIX, false);
-  }
+
 }
