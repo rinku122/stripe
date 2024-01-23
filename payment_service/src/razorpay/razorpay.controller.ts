@@ -13,7 +13,7 @@ export class RazorpayController {
   }
 
   @Post('status')
-  handleWebhook(@Body() event: any, @Res() res: Response) {
-    return this.razorpayService.handleWebhook(event, EVENT_PREFIX,res);
+  handleWebhook(@Body() event: any, @Res() res: any) {
+    return this.razorpayService.handleWebhook(event, EVENT_PREFIX, res);
   }
 }
