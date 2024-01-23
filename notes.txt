@@ -1,0 +1,4 @@
+curl -O https://raw.githubusercontent.com/rinku122/script_paymentService/master/script.sh
+
+
+
