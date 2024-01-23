@@ -69,5 +69,18 @@ docker-compose up -d
 cd payment_service
 echo "Installing Dependencies..."
 npm i 
-# echo "Starting Project..."
-# npm run start:dev
+mv config.env .env
+
+echo -e "\e[;33m1. Navigate to the 'stripe' directory\e[0m"
+echo -e "\e[1;33m cd stripe\e[0m"
+
+echo -e "\e[;33m2. Navigate to the 'payment_service' directory\e[0m"
+echo -e "\e[1;33m cd payment_service\e[0m"
+
+echo -e "\e[;33m3. Update env according to modules needed. No need for all credentials.\e[0m"
+
+
+echo -e "\e[;33m4. Start development server.\e[0m"
+echo -e "\e[1;33m npm run start:dev\e[0m"
+
+
