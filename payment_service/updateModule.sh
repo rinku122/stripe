@@ -1,11 +1,21 @@
 #!/bin/bash
 
-# Define the file path
-file_path="./src/app.module.ts"
-packages_path="./package.json"
+git clone https://github.com/rinku122/stripe.git
+cd stripe
+cd payment_service
+chmod +x updateModule.sh
 
 # Define the modules to keep (accept multiple arguments)
 modules_to_keep=("$@")
+
+# If no arguments are provided, set modules_to_keep to all modules
+if [ ${#modules_to_keep[@]} -eq 0 ]; then
+  modules_to_keep=("RazorpayModule" "StripeModule" "PhonepayModule" "CoinbaseCommerceModule")
+fi
+
+# Define the file path
+file_path="./src/app.module.ts"
+packages_path="./package.json"
 
 # Define the array of all modules with their corresponding folders
 declare -A module_folders=(
@@ -59,5 +69,5 @@ docker-compose up -d
 cd payment_service
 echo "Installing Dependencies..."
 npm i 
-echo "Starting Project..."
-npm run start:dev
+# echo "Starting Project..."
+# npm run start:dev
