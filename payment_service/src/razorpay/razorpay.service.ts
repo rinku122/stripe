@@ -14,8 +14,8 @@ export class RazorpayService {
     private readonly client: ClientProxy,
   ) {
     this.razorpay = new Razorpay({
-      key_id: this.configService.get('KEY_ID'),
-      key_secret: this.configService.get('KEY_SECRET'),
+      RAZORPAY_KEY_ID: this.configService.get('RAZORPAY_KEY_ID'),
+      RAZORPAY_KEY_SECRET: this.configService.get('RAZORPAY_KEY_SECRET'),
     });
   }
 
@@ -35,7 +35,7 @@ export class RazorpayService {
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
       event;
     const generated_signature = crypto
-      .createHmac('sha256', this.configService.get('KEY_SECRET'))
+      .createHmac('sha256', this.configService.get('RAZORPAY_KEY_SECRET'))
       .update(razorpay_order_id + '|' + razorpay_payment_id)
       .digest('hex');
     const isAuthentic = generated_signature === razorpay_signature;

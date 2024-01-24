@@ -17,12 +17,12 @@ export class PhonePayService {
   async checkout(body: any, EVENT_PREFIX: string) {
     const merchantTransactionId = body.transactionId;
     const data = {
-      merchantId: this.configService.get('MERCHANT_ID'),
+      merchantId: this.configService.get('PHONEPAY_MERCHANT_ID'),
       merchantTransactionId: merchantTransactionId,
       merchantUserId: body.MUID,
       name: body.name,
       amount: body.amount,
-      redirectUrl: `${this.configService.get('BASE_URL')}/phonepay/webhook`,
+      redirectUrl: `${this.configService.get('PHONEPAY_BASE_URL')}/phonepay/webhook`,
       redirectMode: 'POST',
       mobileNumber: body.number,
       paymentInstrument: body.paymentInstrument,
@@ -32,12 +32,12 @@ export class PhonePayService {
 
     const payloadMain = Buffer.from(payload).toString('base64');
 
-    const keyIndex = this.configService.get('KEY_INDEX');
+    const keyIndex = this.configService.get('PHONEPAY_KEY_INDEX');
     const string =
-      payloadMain + '/pg/v1/pay' + this.configService.get('SALTKEY');
+      payloadMain + '/pg/v1/pay' + this.configService.get('PHONEPAY_SALTKEY');
     const sha256 = crypto.createHash('sha256').update(string).digest('hex');
     const checksum = sha256 + '###' + keyIndex;
-    const UAT_URL = `${this.configService.get('PHONEPE_URL')}pay`;
+    const UAT_URL = `${this.configService.get('PHONEPAY_URL')}pay`;
     const options = {
       method: 'POST',
       url: UAT_URL,
@@ -70,7 +70,7 @@ export class PhonePayService {
 
     const { merchantId, transactionId, amount } = body;
 
-    const merchantIdSafe = this.configService.get('MERCHANT_ID');
+    const merchantIdSafe = this.configService.get('PHONEPAY_MERCHANT_ID');
 
     const safeAmount = await lastValueFrom(
       this.client.send(`${EVENT_PREFIX}_validate`, transactionId),
@@ -78,11 +78,11 @@ export class PhonePayService {
     if (!safeAmount || amount !== safeAmount || merchantIdSafe !== merchantId)
       throw new BadRequestException();
 
-    const keyIndex = this.configService.get('KEY_INDEX');
+    const keyIndex = this.configService.get('PHONEPAY_KEY_INDEX');
 
     const string =
       `/pg/v1/status/${merchantId}/${transactionId}` +
-      this.configService.get('SALTKEY');
+      this.configService.get('PHONEPAY_SALTKEY');
 
     const sha256 = crypto.createHash('sha256').update(string).digest('hex');
 
@@ -90,7 +90,7 @@ export class PhonePayService {
 
     const options = {
       method: 'GET',
-      url: `${this.configService.get('PHONEPE_URL')}status/${merchantId}/${transactionId}`,
+      url: `${this.configService.get('PHONEPAY_URL')}status/${merchantId}/${transactionId}`,
       headers: {
         accept: 'application/json',
         'Content-Type': 'application/json',
