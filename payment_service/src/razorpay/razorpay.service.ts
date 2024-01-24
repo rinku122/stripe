@@ -14,8 +14,8 @@ export class RazorpayService {
     private readonly client: ClientProxy,
   ) {
     this.razorpay = new Razorpay({
-      RAZORPAY_KEY_ID: this.configService.get('RAZORPAY_KEY_ID'),
-      RAZORPAY_KEY_SECRET: this.configService.get('RAZORPAY_KEY_SECRET'),
+      key_id: this.configService.get('RAZORPAY_KEY_ID'),
+      key_secret: this.configService.get('RAZORPAY_KEY_SECRET'),
     });
   }
 
