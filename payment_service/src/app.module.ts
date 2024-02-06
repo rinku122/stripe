@@ -5,6 +5,7 @@ import * as Joi from 'joi';
 import { StripeModule } from './stripe/stripe.module';
 import { PhonepayModule } from './phonepay/phonepay.module';
 import { CoinbaseCommerceModule } from './coinbaseCommerce/coinbaseCommerce.module';
+import { CoinpaymentModule } from './coinpayments/coinpayment.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { CoinbaseCommerceModule } from './coinbaseCommerce/coinbaseCommerce.modu
     RazorpayModule,
     StripeModule,
     PhonepayModule,
-    CoinbaseCommerceModule
+    CoinbaseCommerceModule,
+    CoinpaymentModule,
   ],
 })
 export class AppModule {}
